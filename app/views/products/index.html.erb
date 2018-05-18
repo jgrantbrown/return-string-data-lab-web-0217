@@ -1,1 +1,43 @@
 
+<h1> All Products </h1>
+<%= link_to "Add Product", new_product_path %>
+<ul>
+  <% @products.each do |product| %>
+    <p> <%= product.name %></p>
+    <div class="prod_desc" id="product-<%= product.id %>"><%= truncate product.description %></div>
+    <div class="prod_inv"></div>
+    <!-- <%= button_to "More Info",  product_path(product), :class => "btn_info" %><br> -->
+     <button class="btn_info" data-id="<%= product.id %>" >More Info</button>
+    <!-- <%# link_to "More Info a" , product_path(product), class: "add", remote: true %>  -->
+    <!-- <%= button_to "More Info", product_path(product), :method => "get", :remote => true, :class => "btn_info" %> -->
+  <% end %>
+
+
+</ul>
+
+<script>
+$(document).ready(function () {
+
+  $(".btn_info ").on('click',function(e){
+    e.preventDefault();
+
+
+    id = $(this).data("id")
+
+
+      $.get("/products/" + id +  "/description", function(data){
+            console.log(data)
+            $("#product-" + id).html(data);
+          });
+       $.get( "/products/" + id + "/inventory", function(data){
+              // Need to render only for this html
+              if (data === "true") {
+                $("#product-" + id).append("Available")
+              } else {
+                $("#product-" + id).append("Sold Out")
+              }
+            });
+
+    })
+ });
+</script>
